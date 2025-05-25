@@ -73,4 +73,24 @@ public class MealController {
 
         return ResponseEntity.ok("Bugünkü toplam kalori: " + totalCalories + " kcal");
     }
+    
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteMeal(@PathVariable Long id) {
+        mealRepository.deleteById(id);
+        return ResponseEntity.ok("Yemek silindi.");
+    }
+    
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateMeal(@PathVariable Long id, @RequestBody Meal updatedMeal) {
+        return mealRepository.findById(id)
+            .map(meal -> {
+                meal.setName(updatedMeal.getName());
+                meal.setCalories(updatedMeal.getCalories());
+                mealRepository.save(meal);
+                return ResponseEntity.ok("Yemek güncellendi");
+            })
+            .orElse(ResponseEntity.notFound().build());
+    }
+
+
 }

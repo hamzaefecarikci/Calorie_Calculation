@@ -1,80 +1,93 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-interface LoginFormData {
-  email: string;
-  password: string;
-}
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  // diğer alanlar varsa buraya ekleyebilirsin
-}
 
 const Login: React.FC = () => {
-  const [formData, setFormData] = useState<LoginFormData>({
-    email: "",
-    password: "",
-  });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
-  const [user, setUser] = useState<User | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
+  setMessage("");
 
-    try {
-      const response = await fetch("http://localhost:8080/api/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+  try {
+    const res = await fetch("http://localhost:8080/api/users/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-      if (!response.ok) {
-        throw new Error("Giriş başarısız");
-      }
-
-      const data: User = await response.json();
-      setUser(data);
-      setError(null);
-    } catch (err: any) {
-      setError(err.message || "Bilinmeyen hata");
-      setUser(null);
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText);
     }
-  };
+
+    const data = await res.json();
+    setMessage(`👋 Hoş geldin, ${data.name}`);
+
+    // ✅ Başarılıysa yönlendir:
+    navigate("/meals");
+
+  } catch (err: any) {
+    setMessage(err.message || "Bir hata oluştu.");
+  }
+};
+
+
+  
 
   return (
-    <div style={{ maxWidth: 400, margin: "auto" }}>
-      <h2>Giriş Yap</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          name="email"
-          placeholder="E-posta"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-        <br />
-        <input
-          type="password"
-          name="password"
-          placeholder="Şifre"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        <br />
-        <button type="submit">Giriş Yap</button>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-200">
+      <div className="bg-white shadow-md rounded-xl p-8 w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center mb-6 text-blue-700">Giriş Yap</h2>
 
-      {user && <p>👋 Hoş geldin, {user.name}</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">E-posta</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Şifre</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition"
+          >
+            Giriş Yap
+          </button>
+
+          <p className="text-sm mt-4 text-center">
+            Hesabınız yok mu?{" "}
+            <Link to="/register" className="text-blue-600 hover:underline">Kayıt Ol</Link>
+          </p>
+        </form>
+
+        {message && (
+          <div className="mt-4 text-center text-sm text-red-600 font-medium">
+            {message}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

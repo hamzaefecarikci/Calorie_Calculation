@@ -18,9 +18,11 @@ public class SecurityConfig {
                     "/api/users/register",
                     "/api/users/login",
                     "/api/users/calories",
-                    "/api/meals/add",                   // yeni eklendi
-                    "/api/meals/all/**",                // yeni eklendi
-                    "/api/meals/today-total/**"         // yeni eklendi
+                    "/api/meals/add",                   
+                    "/api/meals/all/**",               
+                    "/api/meals/today-total/**",		
+                    "/api/meals/delete/**",
+                    "/api/meals/update/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
