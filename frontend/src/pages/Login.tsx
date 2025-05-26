@@ -1,45 +1,39 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const navigate = useNavigate();
-
   
+  const navigate = useNavigate();
+  const { login } = useAuth(); // ✅ Hook burada çağrılmalı (component gövdesinde)
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setMessage("");
+    e.preventDefault();
+    setMessage("");
 
-  try {
-    const res = await fetch("http://localhost:8080/api/users/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const res = await fetch("http://localhost:8080/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (!res.ok) {
-      const errorText = await res.text();
-      throw new Error(errorText);
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText);
+      }
+
+      const data = await res.json();
+      login(data); // ✅ context login fonksiyonu çağrılıyor
+      navigate("/meals");
+
+    } catch (err: any) {
+      setMessage(err.message || "Bir hata oluştu.");
     }
-
-    const data = await res.json();
-    setMessage(`👋 Hoş geldin, ${data.name}`);
-
-    // ✅ Başarılıysa yönlendir:
-    navigate("/meals");
-
-  } catch (err: any) {
-    setMessage(err.message || "Bir hata oluştu.");
-  }
-};
-
-
-  
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-200">

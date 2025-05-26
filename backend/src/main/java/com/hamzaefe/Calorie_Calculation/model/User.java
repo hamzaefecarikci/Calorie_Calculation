@@ -1,7 +1,6 @@
 package com.hamzaefe.Calorie_Calculation.model;
 
-import java.util.List;
-import com.fasterxml.jackson.annotation.JsonManagedReference;import jakarta.persistence.*;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -25,14 +24,9 @@ public class User {
     private String password;
 
     private int age;
-    private double height; // boy (cm)
-    private double weight; // kilo (kg)
+    private double height; // cm
+    private double weight; // kg
     private String gender; // "male" / "female"
+
     private String activityLevel; // "low", "moderate", "high"
-    
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<Meal> meals;
-
-
 }

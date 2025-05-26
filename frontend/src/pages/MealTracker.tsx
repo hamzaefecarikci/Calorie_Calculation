@@ -6,14 +6,19 @@ interface Meal {
   calories: number;
 }
 
-const userId = 1; // Giriş sistemi tamamlandığında dinamik yapılabilir
-
 const MealTracker: React.FC = () => {
   const [meal, setMeal] = useState<Meal>({ name: "", calories: 0 });
   const [meals, setMeals] = useState<Meal[]>([]);
   const [totalCalories, setTotalCalories] = useState<number>(0);
   const [message, setMessage] = useState<string | null>(null);
   const [editingMealId, setEditingMealId] = useState<number | null>(null);
+
+  const getUserId = () => {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    return user.id;
+  };
+
+  const userId = getUserId();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,10 +40,14 @@ const MealTracker: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const response = await fetch("http://localhost:8080/api/meals/add", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...meal, user: { id: userId } }),
+      body: JSON.stringify({
+        ...meal,
+        user: { id: userId },
+      }),
     });
 
     if (response.ok) {
@@ -52,56 +61,55 @@ const MealTracker: React.FC = () => {
   };
 
   const startEditing = (meal: Meal) => {
-  setMeal(meal);
-  setEditingMealId(meal.id || null);
-};
+    setMeal(meal);
+    setEditingMealId(meal.id || null);
+  };
 
-const handleUpdate = async (e: React.FormEvent) => {
-  e.preventDefault();
-  if (!editingMealId) return;
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingMealId) return;
 
-  const response = await fetch(`http://localhost:8080/api/meals/update/${editingMealId}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(meal),
-  });
-
-  if (response.ok) {
-    setMessage("✅ Yemek güncellendi");
-    setMeal({ name: "", calories: 0 });
-    setEditingMealId(null);
-    fetchMeals();
-    fetchTotalCalories();
-  } else {
-    setMessage("❌ Güncelleme başarısız");
-  }
-};
-
-
-  const handleDelete = async (mealId?: number) => {
-  if (!mealId) return;
-  try {
-    const res = await fetch(`http://localhost:8080/api/meals/delete/${mealId}`, {
-      method: "DELETE",
+    const response = await fetch(`http://localhost:8080/api/meals/update/${editingMealId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(meal),
     });
 
-    if (res.ok) {
-      setMessage("✅ Yemek silindi");
+    if (response.ok) {
+      setMessage("✅ Yemek güncellendi");
+      setMeal({ name: "", calories: 0 });
+      setEditingMealId(null);
       fetchMeals();
       fetchTotalCalories();
     } else {
-      setMessage("❌ Silme başarısız");
+      setMessage("❌ Güncelleme başarısız");
     }
-  } catch {
-    setMessage("❌ Silinirken hata oluştu");
-  }
-};
+  };
 
+  const handleDelete = async (mealId?: number) => {
+    if (!mealId) return;
+    try {
+      const res = await fetch(`http://localhost:8080/api/meals/delete/${mealId}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setMessage("✅ Yemek silindi");
+        fetchMeals();
+        fetchTotalCalories();
+      } else {
+        setMessage("❌ Silme başarısız");
+      }
+    } catch {
+      setMessage("❌ Silinirken hata oluştu");
+    }
+  };
 
   useEffect(() => {
+    if (!userId) return;
     fetchMeals();
     fetchTotalCalories();
-  }, []);
+  }, [userId]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100 flex items-start justify-center py-10">
@@ -139,7 +147,6 @@ const handleUpdate = async (e: React.FormEvent) => {
             {editingMealId ? "Güncelle" : "Ekle"}
           </button>
         </form>
-
 
         {message && (
           <div className="mb-4 text-center font-medium text-green-700">{message}</div>

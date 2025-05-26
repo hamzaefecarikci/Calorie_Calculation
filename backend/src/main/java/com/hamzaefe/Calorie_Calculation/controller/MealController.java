@@ -43,7 +43,7 @@ public class MealController {
         mealRepository.save(meal);
         return ResponseEntity.ok("Yemek kaydedildi.");
     }
-
+ 
     // 📃 2. Kullanıcının tüm yemekleri
     @GetMapping("/all/{userId}")
     public ResponseEntity<?> getAllMeals(@PathVariable Long userId) {
@@ -91,6 +91,4 @@ public class MealController {
             })
             .orElse(ResponseEntity.notFound().build());
     }
-
-
 }
