@@ -1,26 +1,92 @@
-# Calorie Calculation - Günlük Kalori Takip Uygulaması
 
-Bu proje, kullanıcıların günlük kalori ihtiyaçlarını hesaplayabilmeleri ve tükettikleri yemekleri kaydederek günlük kalori takibi yapabilmelerini sağlayan Java Spring Boot tabanlı bir web uygulamasıdır.
+# Calorie Tracker App 🥗
+
+Java Spring Boot ve React (TypeScript) ile geliştirilen bu tam işlevli web uygulaması, kullanıcıların günlük kalori ihtiyaçlarını hesaplamalarına, tükettikleri yemekleri kaydederek kalori takibi yapmalarına ve hedeflerine ulaşmalarına yardımcı olur.
 
 ## 🚀 Özellikler
 
-- Günlük kalori ihtiyacı hesaplama (cinsiyet, yaş, boy, kilo, aktivite düzeyine göre)
-- Günlük yemek girişleri ve toplam kalori hesaplama
-- Günlük hedef kaloriye ulaşma durumu
-- Yapay zeka destekli yemek öneri modülü (isteğe bağlı, Mastra Agent ile)
+- 🔐 Kullanıcı Giriş / Kayıt Sistemi
+- 🔢 Günlük Kalori İhtiyacı Hesaplama (BMR bazlı)
+- 🥘 Yemek Girişi ve Günlük Kalori Takibi
+- 📊 Kalori Hedef Takibi
+- 🤖 (Opsiyonel) AI Tabanlı Yemek Önerileri - [Mastra Agent](https://mastra.ai/en/docs) ile
+- 🔒 Giriş yapmayan kullanıcılar için sayfa koruması (protected routes)
+- 🧼 Modern ve sade kullanıcı arayüzü (React + TypeScript)
 
 ## 🛠️ Kullanılan Teknolojiler
 
+### Backend
 - Java 17
-- Spring Boot 3.5.0
-- Spring Web, Spring Data JPA
-- H2 / PostgreSQL / MySQL (tercihe göre)
-- Thymeleaf veya React (opsiyonel frontend entegrasyonu)
-- Mastra Agent (isteğe bağlı AI destekli öneriler için)
+- Spring Boot 3.2+
+- Spring Web
+- Spring Data JPA
+- Spring Security (giriş koruması için)
+- H2 / PostgreSQL (isteğe bağlı)
+- Maven
 
-## 🔧 Kurulum ve Çalıştırma
+### Frontend
+- React
+- TypeScript
+- React Router
+- Context API (AuthContext)
+- Tailwind CSS (isteğe bağlı)
 
-1. Projeyi klonlayın:
-   ```bash
-   git clone https://github.com/kullanici-adi/Calorie_Calculation.git
-   cd Calorie_Calculation
+## 🏁 Kurulum Talimatları
+
+### Backend (Spring Boot)
+
+```bash
+git clone https://github.com/kullanici-adi/calorie-tracker-app.git
+cd calorie-tracker-app/backend
+./mvnw clean install
+./mvnw spring-boot:run
+```
+
+> API, varsayılan olarak `http://localhost:8080` üzerinde çalışır.
+
+### Frontend (React)
+
+```bash
+cd calorie-tracker-app/frontend
+npm install
+npm run dev
+```
+
+> Uygulama arayüzü `http://localhost:5173` adresinde çalışır.
+
+## 🔐 Giriş Korumalı Sayfalar
+
+- `/dashboard` → sadece giriş yapan kullanıcılar görebilir.
+- `/meals` → yemek takibi sayfası
+- `/calculate` → kalori ihtiyacı hesaplama
+
+Giriş yapılmadığında otomatik olarak giriş sayfasına yönlendirilir.
+
+## 📁 Proje Yapısı
+
+```
+calorie-tracker-app/
+├── backend/
+│   ├── controller/
+│   ├── model/
+│   ├── repository/
+│   ├── service/
+│   └── application.properties
+└── frontend/
+    ├── pages/
+    ├── components/
+    ├── context/AuthContext.tsx
+    └── App.tsx
+```
+
+## 🧠 Gelecek Geliştirmeler
+
+- Kullanıcı bazlı kalori raporları (grafiksel)
+- Haftalık / Aylık istatistikler
+- Yemek veri tabanı ile entegrasyon
+- AI yemek öneri sistemi (Mastra Agent)
+- Mobil uyumlu tasarım
+
+## 📄 Lisans
+
+Bu proje eğitim amaçlıdır ve açık kaynak olarak MIT lisansı ile lisanslanmıştır.
