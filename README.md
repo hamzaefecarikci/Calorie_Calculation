@@ -9,7 +9,6 @@ Java Spring Boot ve React (TypeScript) ile geliştirilen bu tam işlevli web uyg
 - 🔢 Günlük Kalori İhtiyacı Hesaplama (BMR bazlı)
 - 🥘 Yemek Girişi ve Günlük Kalori Takibi
 - 📊 Kalori Hedef Takibi
-- 🤖 (Opsiyonel) AI Tabanlı Yemek Önerileri - [Mastra Agent](https://mastra.ai/en/docs) ile
 - 🔒 Giriş yapmayan kullanıcılar için sayfa koruması (protected routes)
 - 🧼 Modern ve sade kullanıcı arayüzü (React + TypeScript)
 
